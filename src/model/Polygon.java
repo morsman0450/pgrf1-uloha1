@@ -25,4 +25,6 @@ public class Polygon {
     public void deletePolygon(){
         points.clear();
     }
+
 }
+

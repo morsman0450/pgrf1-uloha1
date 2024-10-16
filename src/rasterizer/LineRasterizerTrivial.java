@@ -12,6 +12,15 @@ public class LineRasterizerTrivial extends LineRasterizer {
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
+        if (x1 > x2) {
+            int tempX = x1;
+            int tempY = y1;
+            x1 = x2;
+            y1 = y2;
+            x2 = tempX;
+            y2 = tempY;
+        }
+
         float k = (float) (y2 - y1) / (x2 - x1);
         float q = y1 - k * x1;
 
@@ -39,9 +48,5 @@ public class LineRasterizerTrivial extends LineRasterizer {
                 }
             }
         }
-
-
-
-        // raster.setPixel(x, y, color)
     }
 }

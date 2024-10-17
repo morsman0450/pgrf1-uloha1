@@ -21,11 +21,11 @@ public class Controller2D {
 
     private final Panel panel;
     private boolean isShiftPressed = false;
-    private boolean isCtrlPressed = false;
     private LineRasterizer lineRasterizer;
     private LineRasterizerTrivial lineRasterizerTrivial;
-    private FilledLineRasterizer filledLineRasterizer;
+
     private ThickLineRasterizer thickLineRasterizer;
+    private String mode = "L";
     private Point startPoint = null;
     private Point currentPoint = null;
     private boolean drawing = false;
@@ -50,7 +50,7 @@ public class Controller2D {
         lineRasterizerTrivial = new LineRasterizerTrivial(raster);
         lineRasterizerTrivial.setColor(Color.BLUE);
 
-        filledLineRasterizer = new FilledLineRasterizer(raster);
+
 
         thickLineRasterizer = new ThickLineRasterizer(raster, 5,Color.blue);
 
@@ -62,7 +62,7 @@ public class Controller2D {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (isShiftPressed) {
+                if (mode =="P" && !isShiftPressed) {
                     if (polygon.getSize() == 0) {
                         polygon.addPoint(new Point(e.getX(), e.getY()));
                     } else {
@@ -76,10 +76,14 @@ public class Controller2D {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (isShiftPressed) {
+                if (mode =="P" && !isShiftPressed) {
                     polygon.addPoint(new Point(e.getX(), e.getY()));
                 } else {
                     Point endPoint = new Point(e.getX(), e.getY());
+
+                    if(isShiftPressed) {
+                        endPoint = LineSnapper.snapToNearestLine(startPoint,endPoint);
+                    }
                     linesMap.put(lineCounter++, new Point[]{startPoint, endPoint});
 
 
@@ -93,7 +97,7 @@ public class Controller2D {
         panel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (drawing && startPoint != null && !isShiftPressed) {
+                if (drawing && startPoint != null && !isShiftPressed && mode=="L" ) {
                     currentPoint = new Point(e.getX(), e.getY());
                     panel.clear(0x000000);
                     redrawAllLinesAndPolygons();
@@ -101,7 +105,7 @@ public class Controller2D {
 
                     lineRasterizerTrivial.drawLine(startPoint.getX(), startPoint.getY(), currentPoint.getX(), currentPoint.getY());
                     panel.repaint();
-                } else if (isShiftPressed && startPoint != null) {
+                } else if (mode =="P" && !isShiftPressed  && startPoint != null) {
                     currentPoint = new Point(e.getX(), e.getY());
                     panel.clear(0x000000);
 
@@ -116,7 +120,7 @@ public class Controller2D {
                     panel.repaint();
                 }
 
-                if (isCtrlPressed && startPoint != null) {
+                if (isShiftPressed && startPoint != null) {
                     currentPoint = LineSnapper.snapToNearestLine(startPoint, new Point(e.getX(), e.getY()));
 
 
@@ -142,9 +146,11 @@ public class Controller2D {
                 else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = true;
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-                    isCtrlPressed = true;
-                }
+                else if(e.getKeyCode()== KeyEvent.VK_L)
+                    mode = "L";
+                else if(e.getKeyCode()== KeyEvent.VK_P)
+                    mode = "P";
+
             }
 
             @Override
@@ -152,9 +158,7 @@ public class Controller2D {
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = false;
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-                    isCtrlPressed = false;
-                }
+
             }
         });
     }

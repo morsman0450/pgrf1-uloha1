@@ -12,7 +12,6 @@ public class ThickLineRasterizer extends LineRasterizer {
         this.color = color;
     }
 
-    // Přidání getteru pro barvu
     public Color getColor() {
         return color;
     }

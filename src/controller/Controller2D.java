@@ -5,6 +5,7 @@ import model.Polygon;
 import rasterizer.*;
 import view.Panel;
 
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -12,6 +13,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
+
+
+
 
 public class Controller2D {
 
@@ -113,7 +117,8 @@ public class Controller2D {
                 }
 
                 if (isCtrlPressed && startPoint != null) {
-                    currentPoint = snapToNearestLine(startPoint, new Point(e.getX(), e.getY()));
+                    currentPoint = LineSnapper.snapToNearestLine(startPoint, new Point(e.getX(), e.getY()));
+
 
                     panel.clear(0x000000);
                     redrawAllLinesAndPolygons();
@@ -154,24 +159,7 @@ public class Controller2D {
         });
     }
 
-    private Point snapToNearestLine(Point start, Point current) {
-        int dx = current.getX() - start.getX();
-        int dy = current.getY() - start.getY();
 
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (Math.abs(dy) < Math.abs(dx) / 2) {
-                return new Point(current.getX(), start.getY());
-            } else {
-                return new Point(current.getX(), start.getY() + dx);
-            }
-        } else {
-            if (Math.abs(dx) < Math.abs(dy) / 2) {
-                return new Point(start.getX(), current.getY());
-            } else {
-                return new Point(start.getX() + dy, current.getY());
-            }
-        }
-    }
 
     private void redrawAllLinesAndPolygons() {
         panel.clear(0x000000);

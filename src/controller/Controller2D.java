@@ -21,7 +21,6 @@ public class Controller2D {
 
     private final Panel panel;
     private boolean isShiftPressed = false;
-    private boolean isCtrlPressed = false;
     private LineRasterizer lineRasterizer;
     private LineRasterizerTrivial lineRasterizerTrivial;
 
@@ -159,9 +158,7 @@ public class Controller2D {
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = false;
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-                    isCtrlPressed = false;
-                }
+
             }
         });
     }

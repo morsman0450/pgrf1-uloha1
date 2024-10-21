@@ -50,3 +50,12 @@ public class LineRasterizerTrivial extends LineRasterizer {
         }
     }
 }
+
+//Výhody:
+//1) Jednoduchý a snadno pochopitelný
+//2) Funguje na všechny typy čar
+//Nevýhody:
+//1) Pomalý, používa zbytečné výpočty oproti ostatním algoritmům
+//2) Není optimalizovan pro složitější úsešky, jako jsou tlusté čáry nebo anti-leasing
+//3) Pomalé pro hodně dlouhé čáry(existují efektivnější algoritmy)
+

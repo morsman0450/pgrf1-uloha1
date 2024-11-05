@@ -62,7 +62,7 @@ public class Controller2D {
                     if (polygon.getSize() == 0) {
                         polygon.addPoint(new Point(e.getX(), e.getY()));
                     } else {
-                        startPoint = polygon.GetPoint(polygon.getSize() - 1);
+                        startPoint = polygon.getPoint(polygon.getSize() - 1);
                     }
                 } else {
                     startPoint = new Point(e.getX(), e.getY());
@@ -104,7 +104,7 @@ public class Controller2D {
                     if (polygon.getSize() > 1) {
                         polygonRasterizer.rasterize(polygon);
                     }
-                    Point lastPoint = polygon.GetPoint(polygon.getSize() - 1);
+                    Point lastPoint = polygon.getPoint(polygon.getSize() - 1);
                     lineRasterizerTrivial.drawLine(lastPoint.getX(), lastPoint.getY(), currentPoint.getX(), currentPoint.getY());
                     panel.repaint();
                 }
@@ -160,3 +160,4 @@ public class Controller2D {
         panel.repaint();
     }
 }
+

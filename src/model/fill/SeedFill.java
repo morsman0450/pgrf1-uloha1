@@ -26,7 +26,7 @@ public class SeedFill implements Filler {
      * @param y souradnice y pro vyplnovani
      */
     private void seedFill(int x, int y) {
-        // nacist barvu z x a y
+
         int pixelColor = raster.getPixel(x, y);
 
         // TODO:
@@ -45,3 +45,4 @@ public class SeedFill implements Filler {
     }
 
 }
+

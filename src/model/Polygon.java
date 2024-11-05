@@ -14,7 +14,7 @@ public class Polygon {
         points.add(point);
     }
 
-    public Point GetPoint(int index) {
+    public Point getPoint(int index) {
         return points.get(index);
     }
 

@@ -25,8 +25,8 @@ public class PolygonRasterizer {
                 indexB = 0;
             }
 
-            Point A = polygon.GetPoint(indexA);
-            Point B = polygon.GetPoint(indexB);
+            Point A = polygon.getPoint(indexA);
+            Point B = polygon.getPoint(indexB);
 
             lineRasterizer.rasterize(new Line(A, B));
         }

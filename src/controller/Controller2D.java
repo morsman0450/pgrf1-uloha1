@@ -3,6 +3,7 @@ package controller;
 import model.Point;
 import model.Polygon;
 import model.fill.Filler;
+import model.fill.ScanLine;
 import model.fill.SeedFill;
 import rasterizer.*;
 import view.Panel;
@@ -27,6 +28,7 @@ public class Controller2D {
     private Point currentPoint = null;
     private boolean drawing = false;
     private Polygon polygon;
+    private ScanLine scanLine;
     public PolygonRasterizer polygonRasterizer;
     private Map<Integer, Point[]> linesMap = new HashMap<>();
     private int lineCounter = 0;
@@ -47,6 +49,7 @@ public class Controller2D {
         thickLineRasterizer = new ThickLineRasterizer(raster, 5, Color.BLUE);
         polygon = new Polygon();
         polygonRasterizer = new PolygonRasterizer(lineRasterizer);
+        scanLine = new ScanLine(polygonRasterizer, lineRasterizer, polygon);
     }
 
     public void initListeners(Panel panel) {
@@ -57,13 +60,16 @@ public class Controller2D {
                     filler = new SeedFill(panel.getRasterImage(), e.getX(), e.getY(), Color.GREEN.getRGB());
                     filler.fill();
                     panel.repaint();
-                }
-                else if (mode.equals("P") && !isShiftPressed) {
+                } else if (mode.equals("P") && !isShiftPressed) {
                     if (polygon.getSize() == 0) {
                         polygon.addPoint(new Point(e.getX(), e.getY()));
                     } else {
                         startPoint = polygon.getPoint(polygon.getSize() - 1);
                     }
+                } else if (mode.equals("F") && e.getButton() == MouseEvent.BUTTON2) {
+                    filler = scanLine;
+                    filler.fill();
+                    panel.repaint();
                 } else {
                     startPoint = new Point(e.getX(), e.getY());
                     drawing = true;
@@ -72,7 +78,7 @@ public class Controller2D {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (e.getButton() == MouseEvent.BUTTON3 || e.getButton() == MouseEvent.BUTTON2) {
                     return;
                 }
                 if (mode.equals("P") && !isShiftPressed) {
@@ -133,6 +139,8 @@ public class Controller2D {
                     mode = "L";
                 } else if (e.getKeyCode() == KeyEvent.VK_P) {
                     mode = "P";
+                } else if (e.getKeyCode() == KeyEvent.VK_F) {
+                    mode = "F";
                 }
             }
 
@@ -160,4 +168,3 @@ public class Controller2D {
         panel.repaint();
     }
 }
-

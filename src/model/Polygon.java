@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Polygon {
 
@@ -25,6 +26,17 @@ public class Polygon {
     public void deletePolygon(){
         points.clear();
     }
+
+    public List<Point> getPoints() {
+        return new ArrayList<>(points);
+    }
+
+    public void setPoints(List<Point> points) {
+        this.points.clear();
+        this.points.addAll(points);
+    }
+
+
 
 }
 

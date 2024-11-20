@@ -1,7 +1,7 @@
 package model;
 
 public class Edge {
-    Point p1, p2;
+   public Point p1, p2;
 
 
     public Edge(Point p1, Point p2) {
@@ -32,7 +32,10 @@ public class Edge {
         //@param y - y-ova souradnice.
         // @return true pokud prusecnik existuje
         // TODO: dokoncit
-        return y>=p1.getY() && y<=p2.getY();
+        if(p1.getY() == p2.getY()){
+            return false;
+        }
+        return y>=p1.getY() && y<p2.getY();
     }
     //Vypocita a vrati x-ovu souradnici prusecniku
     // @ param y y-ova souradnice

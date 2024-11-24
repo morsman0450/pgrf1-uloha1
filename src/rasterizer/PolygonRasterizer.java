@@ -23,8 +23,6 @@ public class PolygonRasterizer {
         if (polygon.getSize() < 3) {
             return;
         }
-
-        // Nastavení barvy obrysu
         lineRasterizer.setColor(outlineColor);
 
         for (int i = 0; i < polygon.getSize(); i++) {
@@ -38,7 +36,7 @@ public class PolygonRasterizer {
             Point A = polygon.getPoint(indexA);
             Point B = polygon.getPoint(indexB);
 
-            lineRasterizer.rasterize(new Line(A, B)); // Vykreslení obrysu
+            lineRasterizer.rasterize(new Line(A, B));
         }
     }
 

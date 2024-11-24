@@ -2,6 +2,7 @@ package controller;
 
 import model.Point;
 import model.Polygon;
+import model.RegularPentagon;
 import model.fill.ScanLine;
 import model.fill.Filler;
 import model.cut.Cutter;
@@ -56,7 +57,7 @@ public class Controller2D {
         currentPolygon = new Polygon();
         polygons.add(currentPolygon);
         polygonRasterizer = new PolygonRasterizer(lineRasterizer, Color.BLUE);
-        cutter = new Cutter(lineRasterizer,raster);
+        cutter = new Cutter(lineRasterizer, raster);
     }
 
     public void initListeners(Panel panel) {
@@ -66,17 +67,21 @@ public class Controller2D {
                 if (cuttingMode) {
                     cuttingPolygon.addPoint(new Point(e.getX(), e.getY()));
                     redrawAllLinesAndPolygons();
-                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                }else if(mode.equals("G")){
+                    startPoint = new Point(e.getX(),e.getY());
+                }
+                else if (e.getButton() == MouseEvent.BUTTON3) {
                     filler = new SeedFill(panel.getRasterImage(), e.getX(), e.getY(), Color.GREEN.getRGB());
                     filler.fill();
                     panel.repaint();
                 } else if (mode.equals("P") && !isShiftPressed) {
                     if (currentPolygon.getSize() == 0) {
-                        currentPolygon.addPoint(new Point(e.getX(), e.getY()));
-                    } else {
-                        startPoint = currentPolygon.getPoint(currentPolygon.getSize() - 1);
+                            currentPolygon.addPoint(new Point(e.getX(), e.getY()));
+                        } else {
+                            startPoint = currentPolygon.getPoint(currentPolygon.getSize() - 1);
+                        }
                     }
-                } else {
+                 else {
                     startPoint = new Point(e.getX(), e.getY());
                     drawing = true;
                 }
@@ -86,8 +91,16 @@ public class Controller2D {
             public void mouseReleased(MouseEvent e) {
                 if (cuttingMode) {
                     pointsToCut.addPoint(new Point(e.getX(), e.getY()));
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    return;
                 } else if (mode.equals("P") && !isShiftPressed) {
                     currentPolygon.addPoint(new Point(e.getX(), e.getY()));
+                }else if(mode.equals("G") && startPoint != null){
+                    int radius = (int) Math.sqrt(Math.pow(startPoint.getX() - e.getX(), 2) +
+                            Math.pow(startPoint.getY() - e.getY(), 2));
+                    RegularPentagon pentagon = new RegularPentagon(startPoint, radius);
+                    polygons.add(pentagon);
+                    redrawAllLinesAndPolygons();
                 } else {
                     Point endPoint = new Point(e.getX(), e.getY());
                     if (isShiftPressed) {
@@ -131,7 +144,7 @@ public class Controller2D {
                     redrawAllLinesAndPolygons();
                 } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = true;
-                } else if (e.getKeyCode() == KeyEvent.VK_L) {
+                }  else if (e.getKeyCode() == KeyEvent.VK_L) {
                     mode = "L";
                     cuttingMode = false;
                 } else if (e.getKeyCode() == KeyEvent.VK_P) {
@@ -149,6 +162,9 @@ public class Controller2D {
                     cuttingPolygon.deletePolygon();
                     pointsToCut.deletePolygon();
                     panel.repaint();
+                }else if(e.getKeyCode() == KeyEvent.VK_G){
+                    mode = "G";
+                    cuttingMode = false;
                 }
             }
 
@@ -156,17 +172,17 @@ public class Controller2D {
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_X) {
                     cuttingMode = false;
-
-                    if (cuttingPolygon.getSize() > 2 && pointsToCut.getSize() > 2) {
-                        panel.clear(0x000000);
-                        cutter.cut(cuttingPolygon, currentPolygon);
-                        pointsToCut.deletePolygon();
-                        cuttingPolygon.deletePolygon();
-                        panel.repaint();
-
-                    }
-
-
+                    if (cuttingPolygon.getSize() > 2) {
+                            panel.clear(0x000000);
+                            for (Polygon polygon : polygons) {
+                                if (polygon.getSize() > 2) {
+                                    cutter.cut(cuttingPolygon, polygon);
+                                }
+                            }
+                            pointsToCut.deletePolygon();
+                            cuttingPolygon.deletePolygon();
+                            panel.repaint();
+                        }
                 } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = false;
                 }
@@ -198,4 +214,5 @@ public class Controller2D {
 
         panel.repaint();
     }
+
 }

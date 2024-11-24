@@ -181,6 +181,7 @@ public class Controller2D {
                             }
                             pointsToCut.deletePolygon();
                             cuttingPolygon.deletePolygon();
+                            polygons.clear();
                             panel.repaint();
                         }
                 } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {

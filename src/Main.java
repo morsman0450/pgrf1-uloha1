@@ -1,4 +1,5 @@
-import controller.Controller2D;
+
+import controller.Controller3D;
 import rasterizer.Raster;
 import view.Window;
 
@@ -10,7 +11,7 @@ public class Main {
             @Override
             public void run() {
                 Window window = new Window();
-                new Controller2D(window.getPanel());
+                new Controller3D(window.getPanel());
 
             }
         });

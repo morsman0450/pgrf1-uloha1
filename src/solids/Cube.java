@@ -1,5 +1,6 @@
 package solids;
 
+import transforms.Mat4Identity;
 import transforms.Point3D;
 
 public class Cube extends Solid {
@@ -17,7 +18,6 @@ public class Cube extends Solid {
         vertexBuffer.add(new Point3D(1, 1, -1));   // 6
         vertexBuffer.add(new Point3D(-1, 1, -1));  // 7
 
-        //TODO: dokoncit - vertexy a indexBuffer (hrany).
 
         //Topologie
         addIndices(0, 1, 1, 2, 2, 3, 3, 0);
@@ -25,5 +25,7 @@ public class Cube extends Solid {
         addIndices(4, 5, 5, 6, 6, 7, 7, 4);
 
         addIndices(0, 4, 1, 5, 2, 6, 3, 7);
+
+        model = new Mat4Identity();
     }
 }

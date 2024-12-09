@@ -15,6 +15,8 @@ public class Panel extends JPanel {
 
         rasterImage = new RasterBufferedImage(WIDTH, HEIGHT);
         rasterImage.setClearColor(Color.BLACK.getRGB());
+        setFocusable(true);
+        requestFocus();
         rasterImage.clear();
     }
 

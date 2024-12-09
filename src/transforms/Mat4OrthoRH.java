@@ -14,7 +14,7 @@ public class Mat4OrthoRH extends Mat4Identity {
 	 * orthogonal visibility volume (an axis-aligned cuboid symmetrical about xz
 	 * and yz planes) of given dimensions to the normalized clipping volume
 	 * ([-1,1]x[-1,1]x[0,1])
-	 * 
+	 *
 	 * @param w
 	 *            visibility cuboid width
 	 * @param h

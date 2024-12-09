@@ -3,6 +3,8 @@ package solids;
 import transforms.Mat4Identity;
 import transforms.Point3D;
 
+import java.awt.*;
+
 public class Cube extends Solid {
 
     public Cube() {
@@ -27,5 +29,11 @@ public class Cube extends Solid {
         addIndices(0, 4, 1, 5, 2, 6, 3, 7);
 
         model = new Mat4Identity();
+
+
+    }
+    @Override
+    public Color getColorForAxis(int index) {
+        return Color.YELLOW;
     }
 }

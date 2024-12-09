@@ -2,6 +2,7 @@ package renderer;
 
 import model.Line;
 import rasterizer.LineRasterizer;
+import solids.Cube;
 import solids.Solid;
 import transforms.Mat4;
 import transforms.Point3D;
@@ -24,14 +25,13 @@ public class WiredRenderer {
         this.height = height;
         this.view = view;
         this.proj = proj;
+
     }
 
     public void renderSolid(Solid solid) {
-        // iteruji pres seznam indexBufferu
-        Mat4 mvp = new Mat4(solid.getModel()).mul(view).mul(proj); //MVP poradi
-        for (int i = 0; i < solid.getIndexBuffer().size(); i+=2) {
-
-            int indexA  = solid.getIndexBuffer().get(i);
+        Mat4 mvp = new Mat4(solid.getModel()).mul(view).mul(proj);
+        for (int i = 0; i < solid.getIndexBuffer().size(); i += 2) {
+            int indexA = solid.getIndexBuffer().get(i);
             int indexB = solid.getIndexBuffer().get(i + 1);
 
             Point3D pointA = solid.getVertexBuffer().get(indexA);
@@ -40,63 +40,45 @@ public class WiredRenderer {
             pointA = pointA.mul(mvp);
             pointB = pointB.mul(mvp);
 
-            // orezani
-            if(isInView(pointA,pointB)){
-                //dehomogenizace
-                Point3D aDehomoq = pointA.mul(1/pointA.getW());
-                Point3D bDehomoq = pointB.mul(1/pointB.getW());
+            if (isInView(pointA, pointB)) {
+                Point3D aDehomo = pointA.mul(1 / pointA.getW());
+                Point3D bDehomo = pointB.mul(1 / pointB.getW());
 
+                Vec3D pointAToWindows = transformToWindows(new Vec3D(aDehomo));
+                Vec3D pointBToWindows = transformToWindows(new Vec3D(bDehomo));
 
-                //transformace do okna
-                Vec3D pointAToWindows = transformToWindows(new Vec3D(aDehomoq));
-                Vec3D pointBToWindows = transformToWindows(new Vec3D(bDehomoq));
-
-                // Line
                 Line line = new Line(
                         (int) Math.round(pointAToWindows.getX()),
                         (int) Math.round(pointAToWindows.getY()),
                         (int) Math.round(pointBToWindows.getX()),
                         (int) Math.round(pointBToWindows.getY())
                 );
-                // Line rasterizer
-                rasterizer.setColor(Color.WHITE);
-                rasterizer.rasterize(line);
+
+                if (solid instanceof Cube) {
+                    rasterizer.setColor(Color.YELLOW);
+                } else {
+                    Color axisColor = solid.getColorForAxis(indexB);
+                    rasterizer.setColor(axisColor);
                 }
 
+                rasterizer.rasterize(line);
+            }
         }
-
-
     }
+
+
 
     private boolean isInView(Point3D pointA, Point3D pointB) {
-//      všechna x jsou vetši než -w a
-//      všechna x jsou menší než w a
-//      všechna y sjou větší než -w a
-//      všechna y jsou menší než w a
-//      všechna z jsou větší než 0 a
-//      všecna z jsou vštší než w
-        if(
-                pointA.getX()> -pointA.getW() &&
-                pointA.getX()< pointA.getW() &&
-                pointA.getY() > -pointA.getW() &&
-                pointA.getY() < pointA.getW() &&
-                pointA.getZ() > 0 &&
-                pointA.getZ() < pointA.getW() &&
-                        pointB.getX()> -pointB.getW() &&
-                        pointB.getX()< pointB.getW() &&
-                        pointB.getY() > -pointB.getW() &&
-                        pointB.getY() < pointB.getW() &&
-                        pointB.getZ() > 0 &&
-                        pointB.getZ() < pointB.getW()
-
-
-        ){
-            return true;
-        }
-
-
-        return true;
+        // Ověření, že body jsou ve viditelném prostoru
+        return pointA.getW() > 0 && pointB.getW() > 0 &&
+                pointA.getX() > -pointA.getW() && pointA.getX() < pointA.getW() &&
+                pointA.getY() > -pointA.getW() && pointA.getY() < pointA.getW() &&
+                pointA.getZ() > 0 && pointA.getZ() < pointA.getW() &&
+                pointB.getX() > -pointB.getW() && pointB.getX() < pointB.getW() &&
+                pointB.getY() > -pointB.getW() && pointB.getY() < pointB.getW() &&
+                pointB.getZ() > 0 && pointB.getZ() < pointB.getW();
     }
+
 
     private Vec3D transformToWindows(Vec3D v) {
         // A * Vec3D(1,-1,1)
@@ -105,12 +87,10 @@ public class WiredRenderer {
         return v
                 .mul(new Vec3D(1,-1,1) )
                 .add(new Vec3D(1,1,0))
-                .mul(new Vec3D((width-1)/2, (height-1)/2,1));
+                .mul(new Vec3D((double) (width - 1) /2, (double) (height - 1) /2,1));
     }
 
     public void renderSolids(List<Solid> solids) {
-
-
         for(Solid solid : solids) {
             renderSolid(solid);
         }

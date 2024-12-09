@@ -3,6 +3,8 @@ package solids;
 import transforms.Mat4Identity;
 import transforms.Point3D;
 
+import java.awt.*;
+
 public class Axes extends Solid {
 
     public Axes() {
@@ -17,5 +19,7 @@ public class Axes extends Solid {
 
         model = new Mat4Identity();
     }
+
+
 
 }

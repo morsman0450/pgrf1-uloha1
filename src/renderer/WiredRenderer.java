@@ -18,6 +18,7 @@ public class WiredRenderer {
     private LineRasterizer rasterizer;
     private int width, height;
     private Mat4 view, proj;
+    private Solid activeSolid;
 
     public WiredRenderer(LineRasterizer rasterizer, int width, int height, Mat4 view, Mat4 proj) {
         this.rasterizer = rasterizer;
@@ -69,7 +70,7 @@ public class WiredRenderer {
 
 
     private boolean isInView(Point3D pointA, Point3D pointB) {
-        // Ověření, že body jsou ve viditelném prostoru
+        // Ověření viditelnnosti
         return pointA.getW() > 0 && pointB.getW() > 0 &&
                 pointA.getX() > -pointA.getW() && pointA.getX() < pointA.getW() &&
                 pointA.getY() > -pointA.getW() && pointA.getY() < pointA.getW() &&
@@ -94,7 +95,9 @@ public class WiredRenderer {
         for(Solid solid : solids) {
             renderSolid(solid);
         }
-
+    }
+    public void setActiveSolid(Solid solid){
+        this.activeSolid = solid;
     }
 
     public void setRasterizer(LineRasterizer rasterizer) {

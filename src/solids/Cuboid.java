@@ -3,6 +3,8 @@ package solids;
 import transforms.Mat4Identity;
 import transforms.Point3D;
 
+import java.awt.*;
+
 public class Cuboid extends Solid {
 
     public Cuboid(double width, double height, double depth) {
@@ -24,6 +26,10 @@ public class Cuboid extends Solid {
         addIndices(0, 4, 1, 5, 2, 6, 3, 7); // Spojovací hrany
 
         model = new Mat4Identity();
+    }
+    @Override
+    public Color getColorForAxis(int index) {
+        return Color.CYAN;
     }
 
 }

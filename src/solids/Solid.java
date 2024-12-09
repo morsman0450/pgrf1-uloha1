@@ -42,6 +42,12 @@ public class Solid {
     public void setModel(Mat4 model) {
         this.model = model;
     }
+    public void rotate(double angleX, double angleY, double angleZ) {
+        model = model.mul(new Mat4RotX(angleX).mul(new Mat4RotY(angleY)).mul(new Mat4RotZ(angleZ)));
+    }
+    public void scale(double scaleX, double scaleY, double scaleZ) {
+        model = model.mul(new Mat4Scale(scaleX, scaleY, scaleZ));
+    }
     public Color getColorForAxis(int index) {
         // Nastavení barvy podle indexu osy
         switch (index) {

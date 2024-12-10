@@ -31,11 +31,12 @@ public class Controller3D implements Controller {
     private Camera camera;
     private final double cameraSpeed = 0.2;
     private boolean isFirstPerson = true;
+    Mat4 proj;
 
     public Controller3D(Panel panel) {
         this.panel = panel;
         this.raster = panel.getRasterImage();
-                Mat4 proj = new Mat4PerspRH(
+                proj = new Mat4PerspRH(
                 Math.toRadians(120),
                 (double) panel.getHeight() / panel.getWidth(),
                 0.1,
@@ -89,6 +90,25 @@ public class Controller3D implements Controller {
             public void keyPressed(KeyEvent e) {
                 int keyCode = e.getKeyCode();
                 switch (keyCode) {
+                    case KeyEvent.VK_P:
+                         proj = new Mat4PerspRH(
+                                Math.toRadians(120),
+                                (double) panel.getHeight() / panel.getWidth(),
+                                0.1,
+                                100
+                        );
+                        wiredRenderer.setProj(proj);
+                         break;
+                    case KeyEvent.VK_O:
+                        proj = new Mat4OrthoRH(
+                                50,
+                                50,
+                                0.5,
+                                100
+                        );
+                        wiredRenderer.setProj(proj);
+                        break;
+
                     case KeyEvent.VK_1:
                         activeSolid = cube;
                         break;

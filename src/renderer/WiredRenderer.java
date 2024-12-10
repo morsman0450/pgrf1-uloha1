@@ -2,6 +2,7 @@ package renderer;
 
 import model.Line;
 import rasterizer.LineRasterizer;
+import solids.Axes;
 import solids.Cube;
 import solids.Solid;
 import transforms.Mat4;
@@ -31,6 +32,7 @@ public class WiredRenderer {
 
     public void renderSolid(Solid solid) {
         Mat4 mvp = new Mat4(solid.getModel()).mul(view).mul(proj);
+
         for (int i = 0; i < solid.getIndexBuffer().size(); i += 2) {
             int indexA = solid.getIndexBuffer().get(i);
             int indexB = solid.getIndexBuffer().get(i + 1);
@@ -55,7 +57,9 @@ public class WiredRenderer {
                         (int) Math.round(pointBToWindows.getY())
                 );
 
-                if (solid instanceof Cube) {
+                if (solid == activeSolid) {
+                    rasterizer.setColor(Color.WHITE);
+                } else if (solid instanceof Cube) {
                     rasterizer.setColor(Color.YELLOW);
                 } else {
                     Color axisColor = solid.getColorForAxis(indexB);
@@ -69,8 +73,9 @@ public class WiredRenderer {
 
 
 
+
+
     private boolean isInView(Point3D pointA, Point3D pointB) {
-        // Ověření viditelnnosti
         return pointA.getW() > 0 && pointB.getW() > 0 &&
                 pointA.getX() > -pointA.getW() && pointA.getX() < pointA.getW() &&
                 pointA.getY() > -pointA.getW() && pointA.getY() < pointA.getW() &&

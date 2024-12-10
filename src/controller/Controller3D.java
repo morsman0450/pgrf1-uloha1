@@ -8,7 +8,6 @@ import solids.*;
 import transforms.*;
 import view.Panel;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +31,6 @@ public class Controller3D implements Controller {
     private Camera camera;
     private final double cameraSpeed = 0.2;
     private boolean isFirstPerson = true;
-    private Mat4 proj;
-
-
-
-
 
     public Controller3D(Panel panel) {
         this.panel = panel;
@@ -47,8 +41,6 @@ public class Controller3D implements Controller {
                 0.1,
                 100
         );
-
-
 
         lineRasterizer = new LineRasterizerGraphics(raster);
         wiredRenderer = new WiredRenderer(
@@ -76,7 +68,7 @@ public class Controller3D implements Controller {
         cuboid.translate(new Vec3D(0,5,1));
         pyramid.translate(new Vec3D(0, 0, 5));
 
-        activeSolid = cube;
+        activeSolid = null;
 
     }
 
@@ -149,6 +141,10 @@ public class Controller3D implements Controller {
                         activeSolid.rotate(0, Math.toRadians(10), 0);
                         break;// Rotace kolem Y
 
+                    case KeyEvent.VK_Z:
+                        activeSolid.rotate(0, 0, Math.toRadians(10));
+                        break;
+
                     case KeyEvent.VK_M:
                         activeSolid.scale(1.1, 1.1, 1.1);
                         break;// Zvýšení měřítka
@@ -163,7 +159,6 @@ public class Controller3D implements Controller {
             }
         });
 
-
         // Mouse motion listener for camera rotation
         panel.addMouseMotionListener(new MouseMotionAdapter() {
             private int lastX = 0;
@@ -177,8 +172,8 @@ public class Controller3D implements Controller {
                     int deltaX = e.getX() - lastX;
                     int deltaY = e.getY() - lastY;
 
-                    camera = camera.addAzimuth(deltaX * 0.005);
-                    camera = camera.addZenith(deltaY * 0.005);
+                    camera = camera.addAzimuth(deltaX * 0.0015);
+                    camera = camera.addZenith(deltaY * 0.0015);
 
                     lastX = e.getX();
                     lastY = e.getY();

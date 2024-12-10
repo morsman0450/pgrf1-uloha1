@@ -33,6 +33,7 @@ public class WiredRenderer {
     public void renderSolid(Solid solid) {
         Mat4 mvp = new Mat4(solid.getModel()).mul(view).mul(proj);
 
+        // Vykreslení hran objektu
         for (int i = 0; i < solid.getIndexBuffer().size(); i += 2) {
             int indexA = solid.getIndexBuffer().get(i);
             int indexB = solid.getIndexBuffer().get(i + 1);
@@ -57,6 +58,7 @@ public class WiredRenderer {
                         (int) Math.round(pointBToWindows.getY())
                 );
 
+                // Nastavení barvy pro hrany
                 if (solid == activeSolid) {
                     rasterizer.setColor(Color.WHITE);
                 } else if (solid instanceof Cube) {
@@ -70,6 +72,8 @@ public class WiredRenderer {
             }
         }
     }
+
+
 
 
 

@@ -11,6 +11,7 @@ import view.Panel;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Timer;
 
 public class Controller3D implements Controller {
     private final Panel panel;
@@ -22,16 +23,31 @@ public class Controller3D implements Controller {
 
     // solids
     private Solid cube;
+    private Solid animatedCube;
     private Solid axes;
     private Solid cuboid;
     private Solid pyramid;
     private Solid activeSolid;
+    private Solid polygon3D;
+
+    //curves
+    private Cubid3D bezierCurve;
+    private Cubid3D fergusonCurve;
+    private Cubid3D coonsCurve;
 
     //camera
     private Camera camera;
     private final double cameraSpeed = 0.2;
     private boolean isFirstPerson = true;
     Mat4 proj;
+    private int lastX = 0;
+    private int lastY = 0;
+
+    //animation
+    private long lastTime = System.nanoTime();  // Čas poslední rotace
+    private final double ROTATION_SPEED = 0.01; // Rychlost rotace
+    private Timer animationTimer;
+
 
     public Controller3D(Panel panel) {
         this.panel = panel;
@@ -52,9 +68,18 @@ public class Controller3D implements Controller {
                 proj
         );
 
+
         initObjects();
         initListener();
         renderScene();
+        animationTimer = new Timer(33, new ActionListener() { //cca 30FPS
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                animateCubeRotation();
+                renderScene();
+            }
+        });
+        animationTimer.start();
     }
 
     @Override
@@ -62,12 +87,21 @@ public class Controller3D implements Controller {
         initCamera();
         axes = new Axes();
         cube = new Cube();
+        animatedCube = new Cube();
         cuboid = new Cuboid(2, 2, 4);
         pyramid = new Pyramid();
+        polygon3D = new Polygon3D();
 
         cube.translate(new Vec3D(5, 0, 1));
+        animatedCube.translate(new Vec3D(0, 0, 0));
         cuboid.translate(new Vec3D(0,5,1));
         pyramid.translate(new Vec3D(0, 0, 5));
+        polygon3D.translate(new Vec3D(5, 0, 5));
+
+        // Curves
+        bezierCurve = new Cubid3D("Bezier");
+        fergusonCurve = new Cubid3D("Ferguson");
+        coonsCurve = new Cubid3D("Coons");
 
         activeSolid = null;
 
@@ -121,6 +155,26 @@ public class Controller3D implements Controller {
                         activeSolid = pyramid;
                         break;
 
+                    case KeyEvent.VK_4:
+                        activeSolid = polygon3D;
+                        break;
+
+                    case KeyEvent.VK_5:
+                        activeSolid = animatedCube;
+                        break;
+
+                    case KeyEvent.VK_6:
+                        activeSolid = bezierCurve;
+                        break;
+
+                    case KeyEvent.VK_7:
+                        activeSolid = fergusonCurve;
+                        break;
+
+                    case KeyEvent.VK_8:
+                        activeSolid = coonsCurve;
+                        break;
+
                     case KeyEvent.VK_W:
                         camera = camera.forward(cameraSpeed);
                         break;
@@ -167,11 +221,11 @@ public class Controller3D implements Controller {
 
                     case KeyEvent.VK_M:
                         activeSolid.scale(1.1, 1.1, 1.1);
-                        break;// Zvýšení měřítka
+                        break;// Zvětšení
 
                     case KeyEvent.VK_N:
                         activeSolid.scale(0.9, 0.9, 0.9);
-                        break; // Snížení měřítka
+                        break; // Zmenšení
 
                 }
                 wiredRenderer.setActiveSolid(activeSolid);
@@ -179,48 +233,55 @@ public class Controller3D implements Controller {
             }
         });
 
-        // Mouse motion listener for camera rotation
         panel.addMouseMotionListener(new MouseMotionAdapter() {
-            private int lastX = 0;
-            private int lastY = 0;
-
             @Override
-            public void mouseMoved(MouseEvent e) {
+            public void mouseDragged(MouseEvent e) {
+                int deltaX = e.getX() - lastX;
+                int deltaY = e.getY() - lastY;
 
-                    System.out.println("Mouse moved");
+                camera = camera.addAzimuth(deltaX * 0.0015);
+                camera = camera.addZenith(deltaY * 0.0015);
 
-                    int deltaX = e.getX() - lastX;
-                    int deltaY = e.getY() - lastY;
+                lastX = e.getX();
+                lastY = e.getY();
 
-                    camera = camera.addAzimuth(deltaX * 0.0015);
-                    camera = camera.addZenith(deltaY * 0.0015);
-
-                    lastX = e.getX();
-                    lastY = e.getY();
-
-                    renderScene();
-                }
-
+                renderScene();
+            }
         });
-        panel.setFocusable(true);
-    }
 
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                lastX = e.getX();
+                lastY = e.getY();
+            }
+        });
+    }
 
     private void renderScene() {
         panel.clear();
-
         List<Solid> solids = new ArrayList<>();
         solids.add(axes);
         solids.add(cube);
+        solids.add(animatedCube);
         solids.add(pyramid);
         solids.add(cuboid);
-
+        solids.add(polygon3D);
+        solids.add(bezierCurve);
+        solids.add(fergusonCurve);
+        solids.add(coonsCurve);
         wiredRenderer.setView(camera.getViewMatrix());
         wiredRenderer.renderSolids(solids);
 
         panel.repaint();
     }
+    private void animateCubeRotation() {
+        long currentTime = System.nanoTime();
+        double deltaTime = (currentTime - lastTime) / 1_000_000_000.0 ;
+        lastTime = currentTime;
 
+        double rotationAmount = ROTATION_SPEED * deltaTime * 360 * 0.1;
 
-
+        animatedCube.rotate(Math.toRadians(rotationAmount), 0, 1);
+    }
 }

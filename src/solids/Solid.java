@@ -8,12 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Solid {
-    protected List<Point3D> vertexBuffer = new ArrayList<Point3D>();
+    protected List<Point3D> vertexBuffer = new ArrayList<>();
     protected List<Integer> indexBuffer = new ArrayList<>();
     protected Mat4 model;
 
-    // List colors
-    // boolean isSelected
     public Solid() {
         model = new Mat4();
     }
@@ -49,11 +47,10 @@ public class Solid {
         model = model.mul(new Mat4Scale(scaleX, scaleY, scaleZ));
     }
     public Color getColorForAxis(int index) {
-        // Nastavení barvy podle indexu osy
         switch (index) {
-            case 1: return Color.RED;   // Osa X - červená
-            case 2: return Color.GREEN; // Osa Y - zelená
-            case 3: return Color.BLUE;  // Osa Z - modrá
+            case 1: return Color.RED;   // X
+            case 2: return Color.GREEN; // Y
+            case 3: return Color.BLUE;  // Z
             default: return Color.WHITE;
         }
     }

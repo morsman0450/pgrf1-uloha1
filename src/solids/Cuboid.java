@@ -27,9 +27,4 @@ public class Cuboid extends Solid {
 
         model = new Mat4Identity();
     }
-    @Override
-    public Color getColorForAxis(int index) {
-        return Color.CYAN;
-    }
-
 }

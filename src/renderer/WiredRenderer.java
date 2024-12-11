@@ -2,15 +2,10 @@ package renderer;
 
 import model.Line;
 import rasterizer.LineRasterizer;
-import solids.Axes;
-import solids.Cube;
-import solids.Solid;
+import solids.*;
 import transforms.Mat4;
 import transforms.Point3D;
 import transforms.Vec3D;
-
-
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
@@ -41,6 +36,7 @@ public class WiredRenderer {
             Point3D pointA = solid.getVertexBuffer().get(indexA);
             Point3D pointB = solid.getVertexBuffer().get(indexB);
 
+
             pointA = pointA.mul(mvp);
             pointB = pointB.mul(mvp);
 
@@ -63,6 +59,14 @@ public class WiredRenderer {
                     rasterizer.setColor(Color.WHITE);
                 } else if (solid instanceof Cube) {
                     rasterizer.setColor(Color.YELLOW);
+                } else if (solid instanceof Pyramid) {
+                    rasterizer.setColor(Color.MAGENTA);
+                } else if (solid instanceof Cuboid) {
+                    rasterizer.setColor(Color.CYAN);
+                } else if (solid instanceof Cubid3D) {
+                    rasterizer.setColor(((Cubid3D) solid).getCurveColor());
+                } else if (solid instanceof Polygon3D) {
+                    rasterizer.setColor(Color.LIGHT_GRAY);
                 } else {
                     Color axisColor = solid.getColorForAxis(indexB);
                     rasterizer.setColor(axisColor);
@@ -73,13 +77,15 @@ public class WiredRenderer {
         }
     }
 
-
-
-
-
-
-
     private boolean isInView(Point3D pointA, Point3D pointB) {
+        // pro pointA a pointB
+            //  všechna x jsou větší než -w a
+            //  všechna x jsou menší než w a
+            //  všechna y jsou větší než -w a
+            //  všechna y jsou menší než w a
+            //  všechna z jsou větší než 0 a
+            //  všechna z jsou menší než w
+
         return pointA.getW() > 0 && pointB.getW() > 0 &&
                 pointA.getX() > -pointA.getW() && pointA.getX() < pointA.getW() &&
                 pointA.getY() > -pointA.getW() && pointA.getY() < pointA.getW() &&
@@ -103,6 +109,7 @@ public class WiredRenderer {
     public void renderSolids(List<Solid> solids) {
         for(Solid solid : solids) {
             renderSolid(solid);
+
         }
     }
     public void setActiveSolid(Solid solid){

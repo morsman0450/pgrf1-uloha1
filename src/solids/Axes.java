@@ -8,33 +8,33 @@ import java.awt.*;
 public class Axes extends Solid {
 
     public Axes() {
-        int segments = 20; // Počet segmentů na každé ose
+        int segments =1000; // Počet segmentů na každé ose
         double segmentLength = 1.0; // Délka každého segmentu
 
-        // X-axis
+        // X
         for (int i = -segments; i <= segments; i++) {
             vertexBuffer.add(new Point3D(i * segmentLength, 0, 0));
         }
 
-        // Y-axis
+        // Y
         for (int i = -segments; i <= segments; i++) {
             vertexBuffer.add(new Point3D(0, i * segmentLength, 0));
         }
 
-        // Z-axis
+        // Z
         for (int i = -segments; i <= segments; i++) {
             vertexBuffer.add(new Point3D(0, 0, i * segmentLength));
         }
 
-        // Topologie - spojení bodů do linií
+        // Topologie
         int offsetX = 0;
         int offsetY = (2 * segments + 1);
         int offsetZ = (2 * segments + 1) * 2;
 
         for (int i = 0; i < 2 * segments; i++) {
-            addIndices(offsetX + i, offsetX + i + 1); // X-axis
-            addIndices(offsetY + i, offsetY + i + 1); // Y-axis
-            addIndices(offsetZ + i, offsetZ + i + 1); // Z-axis
+            addIndices(offsetX + i, offsetX + i + 1); // X
+            addIndices(offsetY + i, offsetY + i + 1); // Y
+            addIndices(offsetZ + i, offsetZ + i + 1); // Z
         }
 
         model = new Mat4Identity();
@@ -44,11 +44,11 @@ public class Axes extends Solid {
     public Color getColorForAxis(int index) {
         int totalSegments = (vertexBuffer.size() - 1) / 3;
 
-        if (index < totalSegments) { // X-axis
+        if (index < totalSegments) { // X
             return Color.RED;
-        } else if (index < 2 * totalSegments) { // Y-axis
+        } else if (index < 2 * totalSegments) { // Y
             return Color.GREEN;
-        } else { // Z-axis
+        } else { // Z
             return Color.BLUE;
         }
     }

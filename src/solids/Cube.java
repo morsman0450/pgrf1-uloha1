@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cube extends Solid {
-    private List<Point3D> curvePoints;
 
     public Cube() {
         // Geometrie krychle
